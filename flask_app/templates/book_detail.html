@@ -1,0 +1,74 @@
+{% extends "header.html" %} {% block content %}
+
+{% if error_msg %}
+  <b class="text-red-400">
+    {{ error_msg }}
+  </b>
+{% endif %}
+
+{% if book %}
+
+{# Display card for the book details #}
+<div class="book-container">
+  <ul class="book-info md:px-4">
+    <div class="book-title text-2xl font-bold"> {{ book.title }} </div>
+    <p class="book-date"> {{ book.year }}</p>
+    <br>
+    <img class="book-img w-40 h-auto rounded-lg" alt="{{ book.title }}" src="{{ book.cover_url }}" />
+    <br>
+    <li class="opacity-40"><b>Author:</b> {{ book.author }}</li>
+    <li class="opacity-40"><b>Genres:</b> {{ book.genres }}</li>
+    <li class="opacity-40"><b>Publisher:</b> {{ book.publisher }}</li>
+    <br>
+  
+
+  {% if current_user.is_authenticated %}
+  <form action="{{ url_for('users.add_to_reading_list', book_id=request.path.split('/')[-1]) }}" method="post">
+    <button type="submit" style="background-color: #2E8B57; color: white; padding: 6px 10px; border-radius: 9999px; font-weight: bold;">Add to Reading List</button>
+  </form>
+  {% endif %}
+</ul>
+
+  {# Reviews #}
+  <div class="reviews md:px-4">
+    <h1 class="reviews-title"> Reviews
+      <small class="reviews-count"> {{ reviews | length }} reviews </small>
+    </h1>
+    <ul class="review-container">
+      {% for review in reviews %}
+        <li class="review flex gap-2">
+          <img class="h-20 w-20 rounded-lg" src="data:image/png;base64,{{review.image}}" alt="" />
+          <div class="w-full">
+            <span class="review-date">{{ review.date }}</span>
+            <a class="review-commenter" href="{{ url_for('books.user_detail', username=review.commenter.username) }}">
+              @{{ review.commenter.username }}
+            </a>
+            <p class="review-content">{{ review.content }}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if current_user.is_authenticated %}
+      {# Book review submission form #}
+      <div class="container mx-auto">
+        <form method="POST" action="" class="review-form">
+          {{ form.csrf_token }}
+          <div class="form-group review-input">
+            {{ form.text.label }} {{ form.text(class="form-content") }}
+            {% if form.text.errors %}
+              <div class="error" role="alert">
+                {% for error in form.text.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          {{ form.submit(class="review-button") }}
+        </form>
+      </div>
+    {% endif %}
+  </div>
+  <div class="w-0 lg:w-96"></div>
+</div>
+{% endif %} {% endblock content %}

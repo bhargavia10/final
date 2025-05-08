@@ -1,0 +1,51 @@
+{% extends "header.html" %}
+{% block content %}
+{% if error %}
+  <b class="text-red-400" role="alert">{{ error }}</b>
+{% endif %}
+
+<div class="container mx-auto px-4">
+  {# User profile picture #}
+  <div class="mb-6">
+    <img class="rounded-2xl h-24 w-24" src="data:image/png;base64,{{ profile_pic }}" alt="Profile Picture">
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-12">
+    
+    <h1 class="text-2xl font-bold mb-4">{{ user.username }}'s Reviews</h1>
+    <br>
+    {% if reviews %}
+      {% for review in reviews %}
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold">{{ review.book_title }}</h3>
+          <p class="mt-1">{{ review.content }}</p>
+          <small class="text-gray-500">Reviewed on: {{ review.date }}</small>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>This user has no reviews.</p>
+    {% endif %}
+
+    <br>
+    <br>
+
+    <h1 class="text-2xl font-bold mb-4">{{ user.username }}'s Reading List</h1>
+    <br>
+    {% if reading_list %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for book in reading_list %}
+          <div class="flex items-start gap-4">
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="w-20 h-auto rounded">
+            <div>
+              <p class="font-semibold">{{ book.title }}</p>
+              <p class="text-sm text-gray-600">by {{ book.author }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>This user has not added any books to their reading list</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

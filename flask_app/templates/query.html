@@ -1,0 +1,25 @@
+{% extends "header.html" %} {% block content %}
+
+{% if error_msg %}
+  <b class="text-red-400">
+    {{ error_msg }}
+  </b>
+{% endif %}
+
+<div class="results-container">
+  <div class="decoration-container"><div class="decoration"></div></div>
+  {% for result in results %}
+  <a 
+  href="{{ url_for('books.book_detail', book_id=result.id) }}"
+  class="group movie-card">
+  <img src="{{ result.cover_url }}" class="movie-card-img" alt="Book cover" />
+  <h5 class="movie-card-content"> 
+    {{ result.title }}
+    <span class="text-neutral-400 font-normal"> &middot; {{ result.author }} </span>
+  </h5>
+</a>
+
+  {% endfor %}
+</div>
+
+{% endblock %}
